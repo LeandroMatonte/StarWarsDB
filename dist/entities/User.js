@@ -26,7 +26,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 exports.__esModule = true;
 exports.User = void 0;
 var typeorm_1 = require("typeorm");
-var Planet_1 = require("./Planet");
+var Planets_1 = require("./Planets");
+var Characters_1 = require("./Characters");
 var User = /** @class */ (function (_super) {
     __extends(User, _super);
     function User() {
@@ -45,7 +46,7 @@ var User = /** @class */ (function (_super) {
         __metadata("design:type", String)
     ], User.prototype, "last_name");
     __decorate([
-        typeorm_1.Column({ unique: true }),
+        typeorm_1.Column(),
         __metadata("design:type", String)
     ], User.prototype, "email");
     __decorate([
@@ -53,10 +54,15 @@ var User = /** @class */ (function (_super) {
         __metadata("design:type", String)
     ], User.prototype, "password");
     __decorate([
-        typeorm_1.ManyToMany(function () { return Planet_1.Planet; }),
+        typeorm_1.ManyToMany(function () { return Planets_1.Planets; }, { cascade: true }),
         typeorm_1.JoinTable(),
         __metadata("design:type", Array)
-    ], User.prototype, "planets");
+    ], User.prototype, "Planets");
+    __decorate([
+        typeorm_1.ManyToMany(function () { return Characters_1.Characters; }, { cascade: true }),
+        typeorm_1.JoinTable(),
+        __metadata("design:type", Array)
+    ], User.prototype, "Characters");
     User = __decorate([
         typeorm_1.Entity()
     ], User);
