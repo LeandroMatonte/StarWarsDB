@@ -30,15 +30,23 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 // declare a new router to include all the endpoints
 const router = Router();
 
-router.get('/user', verifyToken , safe(actions.getUsers));
+router.get('/user' , verifyToken, safe(actions.getUsers));
 
 router.post('/favorite/people/:userid/:characterid', verifyToken, safe(actions.addFavoriteCharacter));
 router.delete('/favorite/people/:userid/:characterid', verifyToken, safe(actions.deleteFavoriteCharacter));
 router.post('/people', verifyToken , safe(actions.createCharacter));
 
+//Editar base de datos
+router.put('/people/:id', verifyToken, safe(actions.updatePeople));
+router.delete('/people', verifyToken, safe(actions.deletePeople));
+
 router.post('/favorite/planet/:userid/:planetid', verifyToken, safe(actions.addFavoritePlanet));
 router.delete('/favorite/planet/:userid/:planetid', verifyToken, safe(actions.deleteFavoritePlanet));
 router.post('/planets', verifyToken , safe(actions.createPlanet));
+
+//Editar base de datos
+router.put('/planets/:id', verifyToken, safe(actions.updatePlanet));
+router.delete('/planets', verifyToken, safe(actions.deletePlanet));
 
 
 export default router;

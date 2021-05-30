@@ -53,7 +53,13 @@ router.get('/user', verifyToken, utils_1.safe(actions.getUsers));
 router.post('/favorite/people/:userid/:characterid', verifyToken, utils_1.safe(actions.addFavoriteCharacter));
 router["delete"]('/favorite/people/:userid/:characterid', verifyToken, utils_1.safe(actions.deleteFavoriteCharacter));
 router.post('/people', verifyToken, utils_1.safe(actions.createCharacter));
+//Editar base de datos
+router.put('/people/:id', verifyToken, utils_1.safe(actions.updatePeople));
+router["delete"]('/people', verifyToken, utils_1.safe(actions.deletePeople));
 router.post('/favorite/planet/:userid/:planetid', verifyToken, utils_1.safe(actions.addFavoritePlanet));
 router["delete"]('/favorite/planet/:userid/:planetid', verifyToken, utils_1.safe(actions.deleteFavoritePlanet));
 router.post('/planets', verifyToken, utils_1.safe(actions.createPlanet));
+//Editar base de datos
+router.put('/planets/:id', verifyToken, utils_1.safe(actions.updatePlanet));
+router["delete"]('/planets', verifyToken, utils_1.safe(actions.deletePlanet));
 exports["default"] = router;

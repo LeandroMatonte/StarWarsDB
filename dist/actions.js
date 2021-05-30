@@ -215,7 +215,7 @@ var createToken = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 user = _a.sent();
                 if (!user)
                     throw new utils_1.Exception('Invalid email or password', 400);
-                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
+                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: 60 * 5 });
                 return [2 /*return*/, res.json({ user: user, token: token })];
         }
     });

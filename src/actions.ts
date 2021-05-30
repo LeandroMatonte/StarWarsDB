@@ -103,7 +103,7 @@ export const createToken = async (req: Request, res: Response): Promise<Response
 
     if(!user) throw new Exception('Invalid email or password', 400);
 
-    const token = jwt.sign({user}, process.env.JWT_KEY as string, {expiresIn: 60 * 60});
+    const token = jwt.sign({user}, process.env.JWT_KEY as string, {expiresIn: 60 * 5});
 
     return res.json({user, token});
 }

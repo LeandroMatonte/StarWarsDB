@@ -49,7 +49,7 @@ var Characters = /** @class */ (function (_super) {
     ], Characters.prototype, "gender");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", Number)
+        __metadata("design:type", String)
     ], Characters.prototype, "height");
     __decorate([
         typeorm_1.Column(),

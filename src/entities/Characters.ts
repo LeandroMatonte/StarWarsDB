@@ -19,7 +19,7 @@ export class Characters extends BaseEntity {
     gender: string;
 
     @Column()
-    height: number;
+    height: string;
 
     @Column()
     skin_color: string;
