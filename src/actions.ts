@@ -6,6 +6,12 @@ import { Characters } from './entities/Characters'
 import { Planets } from './entities/Planets'
 import jwt from 'jsonwebtoken'
 
+interface IToken {
+    user: User,
+    iat: number,
+    exp: number
+}
+
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
 
     // important validations to avoid ambiguos errors, the client needs to understand what went wrong
@@ -29,6 +35,12 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
     return res.json(users);
 }
 
+export const getUser = async (req: Request, res: Response): Promise<Response> => {
+    const token = req.user as IToken;
+    const user = await getRepository(User).findOne({relations: ["Characters", "Planets"], where:{id: token.user.id}});
+    return res.json(user);
+}
+
 export const createCharacter = async (req: Request, res: Response): Promise<Response> => {
     const charRepo = getRepository(Characters);
     let arrayCharacters: Characters[] = [];
@@ -41,7 +53,7 @@ export const createCharacter = async (req: Request, res: Response): Promise<Resp
         if (!element.eye_color) throw new Exception("Some character eye_color is missing");
         if (!element.image_url) throw new Exception("Some character image_url is missing");
 
-        const newCharacter = charRepo.create(element);
+        const newCharacter = charRepo.create({...element, type:"character"});
         arrayCharacters.push(newCharacter);
     });
 
@@ -73,7 +85,7 @@ export const createPlanet = async (req: Request, res: Response): Promise<Respons
         if (!element.terrain) throw new Exception("Some Planet terrain is missing");
         if (!element.image_url) throw new Exception("Some Planet image_url is missing");
 
-        const newCharacter = planetRepo.create(element);
+        const newCharacter = planetRepo.create({...element, type: "planet"});
         arrayPlanets.push(newCharacter);
     });
 
@@ -103,13 +115,14 @@ export const createToken = async (req: Request, res: Response): Promise<Response
 
     if(!user) throw new Exception('Invalid email or password', 400);
 
-    const token = jwt.sign({user}, process.env.JWT_KEY as string, {expiresIn: 60 * 5});
+    const token = jwt.sign({user}, process.env.JWT_KEY as string, {expiresIn: 60 * 60});
 
     return res.json({user, token});
 }
 
 export const addFavoriteCharacter = async (req: Request, res: Response): Promise<Response> => {
-    const user = await getRepository(User).findOne({relations:["Characters"], where:{id: req.params.userid}});
+    const token = req.user as IToken;
+    const user = await getRepository(User).findOne({relations:["Characters"], where:{id: token.user.id}});
     const character = await getRepository(Characters).findOne({where: {id: req.params.characterid}})
 
     let result:any = {error: "user or character is undefined"};
@@ -123,7 +136,8 @@ export const addFavoriteCharacter = async (req: Request, res: Response): Promise
 }
 
 export const addFavoritePlanet = async (req: Request, res: Response): Promise<Response> => {
-    const user = await getRepository(User).findOne({relations:["Planets"], where:{id: req.params.userid}});
+    const token = req.user as IToken;
+    const user = await getRepository(User).findOne({relations:["Planets"], where:{id: token.user.id}});
     const planet = await getRepository(Planets).findOne({where: {id: req.params.planetid}})
 
     let result:any = {error: "user or planet is undefined"};
@@ -138,7 +152,8 @@ export const addFavoritePlanet = async (req: Request, res: Response): Promise<Re
 }
 
 export const deleteFavoriteCharacter = async (req: Request, res: Response): Promise<Response> => {
-    const user = await getRepository(User).findOne({relations:["Characters"], where:{id: req.params.userid}});
+    const token = req.user as IToken;
+    const user = await getRepository(User).findOne({relations:["Characters"], where:{id: token.user.id}});
     const characterToDelete = await getRepository(Characters).findOne({where: {id: req.params.characterid}})
 
     let result:any = { error: "user or character doesn't exist"};
@@ -154,7 +169,8 @@ export const deleteFavoriteCharacter = async (req: Request, res: Response): Prom
 }
 
 export const deleteFavoritePlanet = async (req: Request, res: Response): Promise<Response> => {
-    const user = await getRepository(User).findOne({relations:["Planets"], where:{id: req.params.userid}});
+    const token = req.user as IToken;
+    const user = await getRepository(User).findOne({relations:["Planets"], where:{id: token.user.id}});
     const planetToDelete = await getRepository(Planets).findOne({where: {id: req.params.planetid}})
 
     let result:any = { error: "user or character doesn't exist"};
@@ -219,4 +235,12 @@ export const deletePlanet = async (req: Request, res: Response): Promise<Respons
         getRepository(Planets).remove(planet);
     });
     return res.json(planets);
+}
+
+export const getFavorites = async (req: Request, res: Response): Promise<Response> => {
+    const token = req.user as IToken;
+    const user = await getRepository(User).findOne({relations:["Planets", "Characters"], where:{id: token.user.id}});
+    if(!user) throw new Exception("no existe el usuario");
+    const result = [...user.Planets, ...user.Characters];
+    return res.json(result);
 }

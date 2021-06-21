@@ -30,4 +30,7 @@ export class Planets extends BaseEntity {
 
     @Column()
     image_url: string;
+
+    @Column()
+    type: string;
 }

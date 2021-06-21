@@ -63,6 +63,10 @@ var Characters = /** @class */ (function (_super) {
         typeorm_1.Column(),
         __metadata("design:type", String)
     ], Characters.prototype, "image_url");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Characters.prototype, "type");
     Characters = __decorate([
         typeorm_1.Entity()
     ], Characters);

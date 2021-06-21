@@ -44,7 +44,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.deletePlanet = exports.updatePlanet = exports.deletePeople = exports.updatePeople = exports.deleteFavoritePlanet = exports.deleteFavoriteCharacter = exports.addFavoritePlanet = exports.addFavoriteCharacter = exports.createToken = exports.getPlanet = exports.getPlanets = exports.createPlanet = exports.getCharacter = exports.getCharacters = exports.createCharacter = exports.getUsers = exports.createUser = void 0;
+exports.getFavorites = exports.deletePlanet = exports.updatePlanet = exports.deletePeople = exports.updatePeople = exports.deleteFavoritePlanet = exports.deleteFavoriteCharacter = exports.addFavoritePlanet = exports.addFavoriteCharacter = exports.createToken = exports.getPlanet = exports.getPlanets = exports.createPlanet = exports.getCharacter = exports.getCharacters = exports.createCharacter = exports.getUser = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var User_1 = require("./entities/User");
 var utils_1 = require("./utils");
@@ -92,6 +92,20 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getUsers = getUsers;
+var getUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, user;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                token = req.user;
+                return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ relations: ["Characters", "Planets"], where: { id: token.user.id } })];
+            case 1:
+                user = _a.sent();
+                return [2 /*return*/, res.json(user)];
+        }
+    });
+}); };
+exports.getUser = getUser;
 var createCharacter = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var charRepo, arrayCharacters;
     return __generator(this, function (_a) {
@@ -215,17 +229,19 @@ var createToken = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 user = _a.sent();
                 if (!user)
                     throw new utils_1.Exception('Invalid email or password', 400);
-                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: 60 * 5 });
+                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
                 return [2 /*return*/, res.json({ user: user, token: token })];
         }
     });
 }); };
 exports.createToken = createToken;
 var addFavoriteCharacter = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, character, result;
+    var token, user, character, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ relations: ["Characters"], where: { id: req.params.userid } })];
+            case 0:
+                token = req.user;
+                return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ relations: ["Characters"], where: { id: token.user.id } })];
             case 1:
                 user = _a.sent();
                 return [4 /*yield*/, typeorm_1.getRepository(Characters_1.Characters).findOne({ where: { id: req.params.characterid } })];
@@ -245,10 +261,12 @@ var addFavoriteCharacter = function (req, res) { return __awaiter(void 0, void 0
 }); };
 exports.addFavoriteCharacter = addFavoriteCharacter;
 var addFavoritePlanet = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, planet, result;
+    var token, user, planet, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ relations: ["Planets"], where: { id: req.params.userid } })];
+            case 0:
+                token = req.user;
+                return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ relations: ["Planets"], where: { id: token.user.id } })];
             case 1:
                 user = _a.sent();
                 return [4 /*yield*/, typeorm_1.getRepository(Planets_1.Planets).findOne({ where: { id: req.params.planetid } })];
@@ -268,10 +286,12 @@ var addFavoritePlanet = function (req, res) { return __awaiter(void 0, void 0, v
 }); };
 exports.addFavoritePlanet = addFavoritePlanet;
 var deleteFavoriteCharacter = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, characterToDelete, result;
+    var token, user, characterToDelete, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ relations: ["Characters"], where: { id: req.params.userid } })];
+            case 0:
+                token = req.user;
+                return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ relations: ["Characters"], where: { id: token.user.id } })];
             case 1:
                 user = _a.sent();
                 return [4 /*yield*/, typeorm_1.getRepository(Characters_1.Characters).findOne({ where: { id: req.params.characterid } })];
@@ -292,10 +312,12 @@ var deleteFavoriteCharacter = function (req, res) { return __awaiter(void 0, voi
 }); };
 exports.deleteFavoriteCharacter = deleteFavoriteCharacter;
 var deleteFavoritePlanet = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, planetToDelete, result;
+    var token, user, planetToDelete, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ relations: ["Planets"], where: { id: req.params.userid } })];
+            case 0:
+                token = req.user;
+                return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ relations: ["Planets"], where: { id: token.user.id } })];
             case 1:
                 user = _a.sent();
                 return [4 /*yield*/, typeorm_1.getRepository(Planets_1.Planets).findOne({ where: { id: req.params.planetid } })];
@@ -397,3 +419,20 @@ var deletePlanet = function (req, res) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.deletePlanet = deletePlanet;
+var getFavorites = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, user, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                token = req.user;
+                return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ relations: ["Planets", "Characters"], where: { id: token.user.id } })];
+            case 1:
+                user = _a.sent();
+                if (!user)
+                    throw new utils_1.Exception("no existe el usuario");
+                result = __spreadArray(__spreadArray([], user.Planets), user.Characters);
+                return [2 /*return*/, res.json(result)];
+        }
+    });
+}); };
+exports.getFavorites = getFavorites;

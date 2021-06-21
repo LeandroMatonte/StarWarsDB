@@ -63,6 +63,10 @@ var Planets = /** @class */ (function (_super) {
         typeorm_1.Column(),
         __metadata("design:type", String)
     ], Planets.prototype, "image_url");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Planets.prototype, "type");
     Planets = __decorate([
         typeorm_1.Entity()
     ], Planets);

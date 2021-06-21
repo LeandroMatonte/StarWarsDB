@@ -29,4 +29,7 @@ export class Characters extends BaseEntity {
 
     @Column()
     image_url: string;
+    
+    @Column()
+    type: string;
 } 

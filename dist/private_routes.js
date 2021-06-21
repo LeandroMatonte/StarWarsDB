@@ -1,16 +1,4 @@
 "use strict";
-/**
- * Pivate Routes are those API urls that require the user to be
- * logged in before they can be called from the front end.
- *
- * Basically all HTTP requests to these endpoints must have an
- * Authorization header with the value "Bearer <token>"
- * being "<token>" a JWT token generated for the user using
- * the POST /token endpoint
- *
- * Please include in this file all your private URL endpoints.
- *
- */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -47,19 +35,22 @@ var verifyToken = function (req, res, next) {
     console.log(decoded);
     next();
 };
-// declare a new router to include all the endpoints
 var router = express_1.Router();
-router.get('/user', verifyToken, utils_1.safe(actions.getUsers));
-router.post('/favorite/people/:userid/:characterid', verifyToken, utils_1.safe(actions.addFavoriteCharacter));
-router["delete"]('/favorite/people/:userid/:characterid', verifyToken, utils_1.safe(actions.deleteFavoriteCharacter));
+router.get('/users', verifyToken, utils_1.safe(actions.getUsers));
+router.get('/user', verifyToken, utils_1.safe(actions.getUser));
+router.get('/favorites', verifyToken, utils_1.safe(actions.getFavorites));
+//Character
 router.post('/people', verifyToken, utils_1.safe(actions.createCharacter));
-//Editar base de datos
 router.put('/people/:id', verifyToken, utils_1.safe(actions.updatePeople));
 router["delete"]('/people', verifyToken, utils_1.safe(actions.deletePeople));
-router.post('/favorite/planet/:userid/:planetid', verifyToken, utils_1.safe(actions.addFavoritePlanet));
-router["delete"]('/favorite/planet/:userid/:planetid', verifyToken, utils_1.safe(actions.deleteFavoritePlanet));
+//Favorite routes
+router.post('/favorite/people/:characterid', verifyToken, utils_1.safe(actions.addFavoriteCharacter));
+router["delete"]('/favorite/people/:characterid', verifyToken, utils_1.safe(actions.deleteFavoriteCharacter));
+//Planet
 router.post('/planets', verifyToken, utils_1.safe(actions.createPlanet));
-//Editar base de datos
 router.put('/planets/:id', verifyToken, utils_1.safe(actions.updatePlanet));
 router["delete"]('/planets', verifyToken, utils_1.safe(actions.deletePlanet));
+//Favorite routes
+router.post('/favorite/planet/:planetid', verifyToken, utils_1.safe(actions.addFavoritePlanet));
+router["delete"]('/favorite/planet/:planetid', verifyToken, utils_1.safe(actions.deleteFavoritePlanet));
 exports["default"] = router;
